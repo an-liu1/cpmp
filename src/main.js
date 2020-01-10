@@ -5,6 +5,9 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+import kityminder from "vue-kityminder-gg";
+Vue.use(kityminder);
+
 new Vue({
   router,
   store,
