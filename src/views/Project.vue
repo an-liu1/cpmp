@@ -81,7 +81,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .about {
-  height: 800px;
-  width: 80%;
+  height: 800px !important;
+  width: 80% !important;
 }
 </style>
