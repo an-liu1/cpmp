@@ -1,6 +1,16 @@
 <template>
   <div class="about">
+    <el-steps :active="active" finish-status="success" simple >
+      <el-step title="目标和团队"></el-step>
+      <el-step title="项目干系人"></el-step>
+      <el-step title="工作任务"></el-step>
+      <el-step title="项目计划"></el-step>
+    </el-steps>
+    <el-button style="margin: 10px 0;float: right;" @click="next"
+      >下一步</el-button
+    >
     <minder
+      class="minder"
       ref="minder"
       @exportData="exportData"
       AccessKey="cTVaSHuahYgy-4Qvbo5LewAd5Add5625w2LSuF_5"
@@ -65,7 +75,8 @@ export default {
             ]
           }
         ]
-      }
+      },
+      active: 0
     };
   },
   methods: {
@@ -75,13 +86,15 @@ export default {
     },
     saveData(data) {
       return data;
+    },
+    next() {
+      if (this.active++ > 2) this.active = 0;
     }
   }
 };
 </script>
 <style lang="scss" scoped>
-.about {
-  height: 800px !important;
-  width: 80% !important;
+.minder {
+  clear: both;
 }
 </style>

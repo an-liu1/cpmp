@@ -8,8 +8,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vue/composition-api": "^0.3.4",
     "core-js": "^3.4.4",
     "element-ui": "^2.13.0",
+    "eslint": "^6.8.0",
     "vue": "^2.6.10",
     "vue-kityminder-gg": "^1.1.30",
     "vue-m-message": "^2.0.0",
@@ -23,7 +25,6 @@
     "@vue/cli-plugin-vuex": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
     "babel-eslint": "^10.0.3",
-    "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.12.0",
     "sass-loader": "^8.0.0",
