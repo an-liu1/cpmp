@@ -9,9 +9,12 @@
   },
   "dependencies": {
     "@vue/composition-api": "^0.3.4",
+    "bootstrap": "^4.4.1",
     "core-js": "^3.4.4",
     "element-ui": "^2.13.0",
     "eslint": "^6.8.0",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.16.0",
     "vue": "^2.6.10",
     "vue-kityminder-gg": "^1.1.30",
     "vue-m-message": "^2.0.0",
