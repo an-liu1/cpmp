@@ -68,35 +68,35 @@
 </template>
 <script>
 export default {
-  name: 'login',
-  data () {
+  name: "login",
+  data() {
     return {
-      username: '',
-      password: '',
-      comfirmPassword:'',
+      username: "",
+      password: "",
+      comfirmPassword: "",
       isLoging: false,
-      author: 'Andy',
-      version: 'v0.1.0',
-      appName: 'Ai FreePMO'
-    }
+      author: "Andy",
+      version: "v0.1.0",
+      appName: "Ai FreePMO"
+    };
   },
   methods: {
-    handleSignUp(){
-      if(!this.username || !this.password || !this.comfirmPassword){
-      this.$msg.warning('请输入账号密码！')
-      }else if(this.password !== this.comfirmPassword){
-        this.$msg.warning('密码不匹配！')
-      }else{
-      this.isLoging = true
-      setTimeout(() => {
-        this.$msg.success('注册成功！')
-        this.$router.push({ path: '/login' })
-        this.isLoging = false
-      }, 1000)
-    }
+    handleSignUp() {
+      if (!this.username || !this.password || !this.comfirmPassword) {
+        this.$msg.warning("请输入账号密码！");
+      } else if (this.password !== this.comfirmPassword) {
+        this.$msg.warning("密码不匹配！");
+      } else {
+        this.isLoging = true;
+        setTimeout(() => {
+          this.$msg.success("注册成功！");
+          this.$router.push({ path: "/login" });
+          this.isLoging = false;
+        }, 1000);
+      }
     }
   }
-}
+};
 </script>
 <style scoped>
 .fff:hover {

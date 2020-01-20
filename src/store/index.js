@@ -7,6 +7,11 @@ export default new Vuex.Store({
   state: {
     showStep: false
   },
+  getters: {
+    active: () => {
+      return localStorage.getItem("active");
+    }
+  },
   mutations: {
     isShowStep(state) {
       state.showStep = true;
