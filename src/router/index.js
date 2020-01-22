@@ -28,7 +28,39 @@ const routes = [
       {
         path: "/stakeholds",
         name: "stakeholds",
-        component: () => import("../views/Stakeholds.vue")
+        component: () => import("../views/Stakeholds.vue"),
+        children: [
+          {
+            path: "/",
+            name: "client",
+            component: () => import("../views/Client.vue"),
+            props: { importData: { data: { text: "客户", id: 1 } } }
+          },
+          {
+            path: "/stakeholds/leader",
+            name: "leader",
+            component: () => import("../views/Client.vue"),
+            props: { importData: { data: { text: "直接领导", id: 1 } } }
+          },
+          {
+            path: "/stakeholds/member",
+            name: "member",
+            component: () => import("../views/Client.vue"),
+            props: { importData: { data: { text: "项目团队核心成员", id: 1 } } }
+          },
+          {
+            path: "/stakeholds/media",
+            name: "media",
+            component: () => import("../views/Client.vue"),
+            props: { importData: { data: { text: "政府，媒体等", id: 1 } } }
+          },
+          {
+            path: "/stakeholds/other",
+            name: "other",
+            component: () => import("../views/Client.vue"),
+            props: { importData: { data: { text: "其他", id: 1 } } }
+          }
+        ]
       },
       {
         path: "/tasks",

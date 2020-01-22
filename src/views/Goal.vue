@@ -4,13 +4,11 @@
       class="minder"
       ref="minder"
       @exportData="exportData"
-      AccessKey="cTVaSHuahYgy-4Qvbo5LewAd5Add5625w2LSuF_5"
-      SecretKey="ZEJvO2-zNNE07p8DpPIBtyejt_BYf2SxZ7pbsMR7"
-      Domain="http://puo3hd5oc.bkt.clouddn.com"
       scope="jm"
       :importData="importData"
       @saveData="saveData"
     ></minder>
+    <el-button type="primary" class="float-right mr-5" @click="next">下一步</el-button>
   </div>
 </template>
 <script>
@@ -22,7 +20,7 @@ export default {
         data: { text: "项目名称", id: 2 },
         children: [
           {
-            data: { text: "项目目标", id: 3 },
+            data: { text: "项目目标", id: 3, priority: "6" },
             children: [
               {
                 data: { text: "完成什么", id: 4 },
@@ -42,7 +40,7 @@ export default {
             ]
           },
           {
-            data: { text: "项目团队", id: 3 },
+            data: { text: "项目团队", id: 3, progress: "5" },
             children: [
               {
                 data: { text: "负责人1", id: 4 },
@@ -75,13 +73,12 @@ export default {
       return data;
     },
     saveData(data) {
-      return data;
+      console.log(data);
+    },
+    next() {
+      localStorage.setItem("active", "1");
+      this.$router.push("/stakeholds");
     }
   }
 };
 </script>
-<style lang="scss" scoped>
-.minder {
-  clear: both;
-}
-</style>

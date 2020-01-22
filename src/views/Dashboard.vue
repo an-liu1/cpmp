@@ -55,7 +55,16 @@ export default {
       return this.$store.state.showStep;
     }
   },
+  mounted() {
+    this.getActive();
+  },
+  watch: {
+    $route: "getActive"
+  },
   methods: {
+    getActive() {
+      this.active = parseInt(localStorage.getItem("active"));
+    },
     stepClick(val) {
       localStorage.setItem("active", val);
       this.active = parseInt(localStorage.getItem("active"));
@@ -72,10 +81,6 @@ export default {
         case 4:
           this.$router.push("/plans");
           break;
-        // case 4:
-        // this.$refs.finishbtn.$el.style.display = "none";
-        // localStorage.setItem("active", "0");
-        // break;
       }
     }
   }
