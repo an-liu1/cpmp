@@ -7,12 +7,11 @@
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b"
+    :router="true"
   >
-    <el-menu-item index="1">
-      <a href="/#/dashboard">
-        <i class="el-icon-s-home"></i>
-        <span slot="title">首页</span>
-      </a>
+    <el-menu-item index="/dashboard">
+      <i class="el-icon-s-home"></i>
+      <span slot="title">首页</span>
     </el-menu-item>
 
     <el-submenu index="2">
@@ -20,7 +19,7 @@
         <i class="el-icon-s-data"></i>
         <span>目标与团队</span>
       </template>
-      <el-menu-item index="2-1">辅助流程</el-menu-item>
+      <el-menu-item index="/goal">辅助流程</el-menu-item>
       <el-menu-item-group>
         <template slot="title">目标</template>
         <el-menu-item index="2-2">项目目标确定</el-menu-item>
@@ -36,7 +35,7 @@
         <i class="el-icon-user-solid"></i>
         <span>项目干系人</span>
       </template>
-      <el-menu-item index="3-1">辅助流程</el-menu-item>
+      <el-menu-item index="/stakeholds">辅助流程</el-menu-item>
       <el-menu-item-group>
         <template slot="title">干系人</template>
         <el-menu-item index="3-2">项目沟通计划</el-menu-item>
@@ -53,7 +52,7 @@
         <i class="el-icon-menu"></i>
         <span>工作任务</span>
       </template>
-      <el-menu-item index="4-1">辅助流程</el-menu-item>
+      <el-menu-item index="/tasks">辅助流程</el-menu-item>
       <el-menu-item index="4-2">工作任务属性</el-menu-item>
       <el-menu-item index="4-3">任务的估算</el-menu-item>
     </el-submenu>
@@ -63,7 +62,7 @@
         <i class="el-icon-date"></i>
         <span>项目计划</span>
       </template>
-      <el-menu-item index="5-1">辅助流程</el-menu-item>
+      <el-menu-item index="/plans">辅助流程</el-menu-item>
       <el-menu-item-group>
         <template slot="title">计划</template>
         <el-menu-item index="5-2">任务的排序</el-menu-item>
@@ -96,7 +95,7 @@
       <span slot="title">设置</span>
     </el-menu-item>
 
-    <el-menu-item index="9">
+    <el-menu-item index="/login" @click="logout">
       <i class="el-icon-switch-button"></i>
       <span slot="title">退出登录</span>
     </el-menu-item>
@@ -111,6 +110,9 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    logout() {
+      localStorage.clear();
     }
   }
 };
