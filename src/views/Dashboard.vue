@@ -93,11 +93,12 @@ export default {
 .el-aside {
   height: 100vh;
   background-color: #545c64;
+  // background: linear-gradient(to top, #f7fafd, #76b9ff);
 }
 .logo {
-  width: 100%;
+  width: 300px;
   img {
-    width: 60%;
+    width: 90%;
     margin: 30px auto;
     display: block;
   }

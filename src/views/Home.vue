@@ -38,7 +38,7 @@
     font-weight: lighter;
   }
   .home-logo {
-    max-width: 200px;
+    width: 300px;
     color: #fff;
   }
 
