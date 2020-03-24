@@ -18,7 +18,9 @@
       >
       <el-menu-item index="1-1" class="text-center">我的信息</el-menu-item>
       <el-menu-item index="1-2" class="text-center">修改密码</el-menu-item>
-      <el-menu-item index="/login" @click="logout" class="text-center">退出登录</el-menu-item>
+      <el-menu-item index="/login" @click="logout" class="text-center"
+        >退出登录</el-menu-item
+      >
     </el-submenu>
   </el-menu>
 </template>
@@ -36,7 +38,7 @@ export default {
 
     const logout = () => {
       localStorage.clear();
-    }
+    };
     return {
       activeIndex,
       handleSelect,

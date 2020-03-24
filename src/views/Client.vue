@@ -12,14 +12,13 @@
 </template>
 <script>
 export default {
-  props:["importData"],
+  // props:["importData"],
   data() {
     return {
-      // importData: {
-      //   //数据结构
-      //   data: { text: "客户", id: 1 }
-      // }
+      importData: {}
     };
+  },
+  mounted() {
   },
   methods: {
     exportData(data) {

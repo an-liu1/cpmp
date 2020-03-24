@@ -95,6 +95,9 @@ export default {
   background-color: #545c64;
   // background: linear-gradient(to top, #f7fafd, #76b9ff);
 }
+.el-aside::-webkit-scrollbar {
+  width: 0;
+}
 .logo {
   width: 300px;
   img {
