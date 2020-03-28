@@ -19,7 +19,6 @@ export default {
     }
   },
   mounted() {
-    this.$store.commit("noShowStep");
     this.$store.dispatch("getAllMinders");
   },
   computed: {

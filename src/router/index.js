@@ -1,14 +1,19 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Welcome from "../views/Welcome.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: Home
+    name: "Welcome",
+    component: Welcome
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("../views/Login.vue")
   },
   {
     path: "/dashboard",
@@ -21,73 +26,58 @@ const routes = [
         component: () => import("../views/Homepage.vue")
       },
       {
-        path: "/projects",
-        name: "projects",
-        component: () => import("../views/Project.vue")
+        path: "/newproject",
+        name: "newproject",
+        component: () => import("../views/NewProject.vue"),
+        // children: [
+        //   {
+        //     path: "/client",
+        //     name: "client",
+        //     component: () => import("../components/Minder.vue"),
+        //     props: true
+        //   },
+        //   {
+        //     path: "/leader",
+        //     name: "leader",
+        //     component: () => import("../components/Minder.vue"),
+        //     props: true
+        //   },
+        //   {
+        //     path: "/member",
+        //     name: "member",
+        //     component: () => import("../components/Minder.vue"),
+        //     props: true
+        //   },
+        //   {
+        //     path: "/media",
+        //     name: "media",
+        //     component: () => import("../components/Minder.vue"),
+        //     props: true
+        //   },
+        //   {
+        //     path: "/other",
+        //     name: "other",
+        //     component: () => import("../components/Minder.vue"),
+        //     props: true
+        //   }
+        // ]
       },
       {
-        path: "/goal",
-        name: "gaol",
-        component: () => import("../views/Goal.vue")
+        path: "/exampleproject",
+        name: "exampleproject",
+        component: () => import("../views/ExampleProject.vue")
       },
       {
-        path: "/stakeholds",
-        name: "stakeholds",
-        component: () => import("../views/Stakeholds.vue"),
-        children: [
-          {
-            path: "/",
-            name: "client",
-            component: () => import("../views/Client.vue"),
-            props: { importData: { data: { text: "客户", id: 1 } } }
-          },
-          {
-            path: "/stakeholds/leader",
-            name: "leader",
-            component: () => import("../views/Client.vue"),
-            props: { importData: { data: { text: "直接领导", id: 1 } } }
-          },
-          {
-            path: "/stakeholds/member",
-            name: "member",
-            component: () => import("../views/Client.vue"),
-            props: { importData: { data: { text: "项目团队核心成员", id: 1 } } }
-          },
-          {
-            path: "/stakeholds/media",
-            name: "media",
-            component: () => import("../views/Client.vue"),
-            props: { importData: { data: { text: "政府，媒体等", id: 1 } } }
-          },
-          {
-            path: "/stakeholds/other",
-            name: "other",
-            component: () => import("../views/Client.vue"),
-            props: { importData: { data: { text: "其他", id: 1 } } }
-          }
-        ]
-      },
-      {
-        path: "/tasks",
-        name: "tasks",
-        component: () => import("../views/Tasks.vue")
-      },
-      {
-        path: "/plans",
-        name: "plans",
-        component: () => import("../views/Plans.vue")
+        path: "/myprojects",
+        name: "myprojects",
+        component: () => import("../views/MyProject.vue")
       }
     ]
-  },
-  {
-    path: "/login",
-    name: "login",
-    component: () => import("../views/Login.vue")
   }
 ];
 
 const router = new VueRouter({
   routes
-})
+});
 
-export default router
+export default router;

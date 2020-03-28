@@ -1,41 +1,34 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import request from "./requst";
-// import axios from "axios";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     message: "",
-    errMessage: "",
     status: "",
-    showStep: false,
     minderData: {},
-    allMinderData: []
-  },
-  getters: {
-    active: () => {
-      return localStorage.getItem("active");
-    }
+    minderChartId: "",
+    allMinderData: [],
+    exampleMinder: []
   },
   mutations: {
     logInResponse(state, payload) {
       state.message = payload.data;
       state.status = payload.status;
-      // state.errMessage = payload.data.data.message;
     },
-    isShowStep(state) {
-      state.showStep = true;
-    },
-    noShowStep(state) {
-      state.showStep = false;
-    },
-    getMInder(state, payload) {
+    getMinder(state, payload) {
       state.minderData = payload;
     },
-    getAllMInders(state, payload) {
+    getAllMinders(state, payload) {
       state.allMinderData = payload;
+    },
+    getMinderChartId(state, payload) {
+      state.minderChartId = payload._id;
+    },
+    getExampleMinder(state, payload) {
+      state.exampleMinder = payload;
     }
   },
   actions: {
@@ -49,16 +42,35 @@ export default new Vuex.Store({
     async signup(context, data) {
       await request("post", "register", data);
     },
-    // async getMinderChart({ commit }, data) {
-    //   let res = await request("get", `minder/minderGet/${data}`);
-    //   commit("getMInder", res);
-    // },
-    getMinderChart({ commit }, data) {
-      let res = request("get", `minder/minderGet/${data}`);
-      commit("getMInder", res[0]);
+    async getMinderChart({ commit }, data) {
+      try {
+        let res = await request(
+          "get",
+          `minder/minderGet/${data.minderName}/${data.projectName}`
+        );
+        commit("getMinder", res[0]);
+      } catch (err) {
+        commit("getMinder", err[0]);
+      }
     },
-    async setMinderChart(context, data) {
-      await request("post", "minder/minderSet", data);
+    async getExampleMinderChart({ commit }, data) {
+      try {
+        let res = await request(
+          "get",
+          `minder/minderGetExample/${data.minderName}/${data.projectName}`
+        );
+        commit("getExampleMinder", res);
+      } catch (err) {
+        commit("getExampleMinder", err);
+      }
+    },
+    async setMinderChart({ commit }, data) {
+      try {
+        let res = await request("post", "minder/minderSet", data);
+        commit("getMinderChartId", res);
+      } catch (err) {
+        commit("getMinderChartId", err);
+      }
     },
     async updateMinderChart(context, data) {
       await request("post", `minder/minderUpdate/${data.minderId}`, data);
@@ -75,10 +87,10 @@ export default new Vuex.Store({
     getAllMinders({ commit }) {
       request("get", "minder/minderGetAll")
         .then(res => {
-          commit("getAllMInders", res);
+          commit("getAllMinders", res);
         })
         .catch(err => {
-          commit("getAllMInders", err);
+          commit("getAllMinders", err);
         });
     }
   },

@@ -1,9 +1,9 @@
 import axios from "axios";
 import { throwErr } from "@/utils";
 import store from "@/store";
+import router from "@/router";
 import { mainDomain } from "@/MainAPI.js";
-
-axios.defaults.headers["Content-Type"] = "application/json;charse=UTF-8";
+import Vue from "vue";
 
 axios.interceptors.request.use(
   config => {
@@ -14,7 +14,7 @@ axios.interceptors.request.use(
       };
       // config.headers.Authorization = localStorage.getItem("Authorization");
     }
-    config.timeout = 100 * 1000;
+    config.timeout = 10 * 1000;
     return config;
   },
   error => {
@@ -27,6 +27,13 @@ axios.interceptors.response.use(
     if (response.data.code === 0) {
       store.dispatch("logInResponse", response.data);
       return Promise.resolve(response.data);
+    } else if (response.data.code === 1401) {
+      Vue.prototype.$msg({
+        message: "Login Please!",
+        type: "error"
+      });
+      router.push("/login");
+      return Promise.reject(response.data);
     } else {
       return Promise.reject(response.data);
     }
@@ -37,6 +44,10 @@ axios.interceptors.response.use(
       let res = {};
       res.code = error.response.status;
       res.msg = throwErr(error.response.status, error.response);
+      Vue.prototype.$msg({
+        message: error.response.data,
+        type: "error"
+      });
       return Promise.reject(res);
     }
     return Promise.reject(error);
