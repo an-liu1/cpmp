@@ -26,41 +26,14 @@ const routes = [
         component: () => import("../views/Homepage.vue")
       },
       {
+        path: "/project/:id",
+        name: "project",
+        component: () => import("../views/Project.vue")
+      },
+      {
         path: "/newproject",
         name: "newproject",
-        component: () => import("../views/NewProject.vue"),
-        // children: [
-        //   {
-        //     path: "/client",
-        //     name: "client",
-        //     component: () => import("../components/Minder.vue"),
-        //     props: true
-        //   },
-        //   {
-        //     path: "/leader",
-        //     name: "leader",
-        //     component: () => import("../components/Minder.vue"),
-        //     props: true
-        //   },
-        //   {
-        //     path: "/member",
-        //     name: "member",
-        //     component: () => import("../components/Minder.vue"),
-        //     props: true
-        //   },
-        //   {
-        //     path: "/media",
-        //     name: "media",
-        //     component: () => import("../components/Minder.vue"),
-        //     props: true
-        //   },
-        //   {
-        //     path: "/other",
-        //     name: "other",
-        //     component: () => import("../components/Minder.vue"),
-        //     props: true
-        //   }
-        // ]
+        component: () => import("../views/NewProject.vue")
       },
       {
         path: "/exampleproject",

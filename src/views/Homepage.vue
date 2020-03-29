@@ -26,7 +26,7 @@ export default {
     newProject() {
       localStorage.setItem("active", 0);
       this.$router.push("/newproject");
-      sessionStorage.clear();
+      this.$store.commit("resetMinder");
     }
   }
 };

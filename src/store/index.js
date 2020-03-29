@@ -9,7 +9,7 @@ export default new Vuex.Store({
     message: "",
     status: "",
     minderData: {},
-    minderChartId: "",
+    minderChartBack: {},
     allMinderData: [],
     exampleMinder: []
   },
@@ -18,14 +18,17 @@ export default new Vuex.Store({
       state.message = payload.data;
       state.status = payload.status;
     },
+    resetMinder(state) {
+      state.minderChartBack = {};
+    },
     getMinder(state, payload) {
       state.minderData = payload;
     },
     getAllMinders(state, payload) {
       state.allMinderData = payload;
     },
-    getMinderChartId(state, payload) {
-      state.minderChartId = payload._id;
+    setMinderBcak(state, payload) {
+      state.minderChartBack = payload;
     },
     getExampleMinder(state, payload) {
       state.exampleMinder = payload;
@@ -42,23 +45,9 @@ export default new Vuex.Store({
     async signup(context, data) {
       await request("post", "register", data);
     },
-    async getMinderChart({ commit }, data) {
+    async getExampleMinderChart({ commit }) {
       try {
-        let res = await request(
-          "get",
-          `minder/minderGet/${data.minderName}/${data.projectName}`
-        );
-        commit("getMinder", res[0]);
-      } catch (err) {
-        commit("getMinder", err[0]);
-      }
-    },
-    async getExampleMinderChart({ commit }, data) {
-      try {
-        let res = await request(
-          "get",
-          `minder/minderGetExample/${data.minderName}/${data.projectName}`
-        );
+        let res = await request("get", `minder/minderGetExample`);
         commit("getExampleMinder", res);
       } catch (err) {
         commit("getExampleMinder", err);
@@ -67,31 +56,41 @@ export default new Vuex.Store({
     async setMinderChart({ commit }, data) {
       try {
         let res = await request("post", "minder/minderSet", data);
-        commit("getMinderChartId", res);
+        commit("setMinderBcak", res);
       } catch (err) {
-        commit("getMinderChartId", err);
+        commit("setMinderBcak", err);
       }
     },
-    async updateMinderChart(context, data) {
-      await request("post", `minder/minderUpdate/${data.minderId}`, data);
+    async updateMinderChart({ commit }, data) {
+      try {
+        let res = await request(
+          "put",
+          `minder/minderUpdate/${data.minderId}`,
+          data
+        );
+        commit("setMinderBcak", res);
+      } catch (err) {
+        commit("setMinderBcak", err);
+      }
     },
-    // getMinderChart({ commit }, data) {
-    //   request("get", `minder/minderGet/${data}`)
-    //     .then(res => {
-    //       commit("getMInder", res[0]);
-    //     })
-    //     .catch(err => {
-    //       commit("getMInder", err[0]);
-    //     });
-    // },
-    getAllMinders({ commit }) {
-      request("get", "minder/minderGetAll")
-        .then(res => {
-          commit("getAllMinders", res);
-        })
-        .catch(err => {
-          commit("getAllMinders", err);
-        });
+    async getMinderChart({ commit }, data) {
+      try {
+        let res = await request("get", `minder/minderGet/${data}`);
+        commit("getMinder", res[0]);
+      } catch (err) {
+        commit("getMinder", err[0]);
+      }
+    },
+    async deleteMinderChart(context, data) {
+      await request("delete", `minder/minderDelete/${data}`);
+    },
+    async getAllMinders({ commit }) {
+      try {
+        let res = await request("get", "minder/minderGetAll");
+        commit("getAllMinders", res);
+      } catch (err) {
+        commit("getAllMinders", err);
+      }
     }
   },
   modules: {}

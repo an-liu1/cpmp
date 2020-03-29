@@ -7,9 +7,11 @@
         alt="newProject"
       />
       <h3 class="text-center">{{ minder.projectName }}</h3>
-      <button class="d-block mx-auto" @click="moreDetail(minder.projectName)">
-        了解更多
-      </button>
+      <div class="text-center">
+        <el-button type="primary" @click="moreDetail(minder._id)">
+          查看
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -17,14 +19,13 @@
 export default {
   methods: {
     moreDetail(id) {
-      this.$store.dispatch("getMinderChart", id);
+      localStorage.setItem("active", 0);
+      this.$router.push(`/project/${id}`);
+      this.$msg.success("点击保存，保存项目至本地！");
     }
   },
   mounted() {
-    this.$store.dispatch("getExampleMinderChart", {
-      minderName: "goalexample",
-      projectName: "projectexample"
-    });
+    this.$store.dispatch("getExampleMinderChart");
   },
   computed: {
     exampleMinder: function() {

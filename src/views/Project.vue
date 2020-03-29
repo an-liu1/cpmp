@@ -16,7 +16,7 @@
         <mindercomponent
           @updateData="updateGoal"
           @saveData="updateGoal"
-          :importData="minderChartBack.goal || exampleMinder.goal"
+          :importData="minderData.goal"
         />
       </div>
 
@@ -31,13 +31,7 @@
         <mindercomponent
           @updateData="updateStakehold"
           @saveData="updateStakehold"
-          :importData="
-            !minderChartBack.stakehold
-              ? exampleMinder.stakehold
-              : Object.keys(this.minderChartBack.stakehold).length === 1
-              ? exampleMinder.stakehold
-              : minderChartBack.stakehold
-          "
+          :importData="minderData.stakehold"
         />
       </section>
       <el-button type="primary" class="float-right mr-5" @click="nextS"
@@ -53,13 +47,7 @@
       <mindercomponent
         @updateData="updateTask"
         @saveData="updateTask"
-        :importData="
-          !minderChartBack.stakehold
-            ? {}
-            : Object.keys(this.minderChartBack.task).length === 1
-            ? minderChartBack.stakehold
-            : minderChartBack.task
-        "
+        :importData="minderData.task"
       />
       <el-button type="primary" class="float-right mr-5" @click="nextS"
         >下一步</el-button
@@ -81,7 +69,7 @@
 
     <!-- 项目完成，点击查看 -->
     <div class="finish" v-else-if="active === 4">
-      <h1>项目完成，点击查看</h1>
+      <h1>成功修改, 点击查看</h1>
     </div>
   </div>
 </template>
@@ -100,24 +88,17 @@ export default {
         { index: 1, title: "项目干系人及需求" },
         { index: 2, title: "工作任务" },
         { index: 3, title: "项目计划" }
-      ],
-      projectName: ""
+      ]
     };
   },
   computed: {
     minderData: function() {
       return this.$store.state.minderData;
-    },
-    exampleMinder: function() {
-      return this.$store.state.exampleMinder[0];
-    },
-    minderChartBack: function() {
-      return this.$store.state.minderChartBack;
     }
   },
   mounted() {
     this.active = parseInt(localStorage.getItem("active")) || 0;
-    this.$store.dispatch("getExampleMinderChart");
+    this.$store.dispatch("getMinderChart", this.$route.params.id);
   },
   methods: {
     stepClick(val) {
@@ -135,48 +116,25 @@ export default {
       this.active = parseInt(localStorage.getItem("active"));
     },
     updateGoal(data) {
-      if (this.projectName) {
-        let minderData = {
-          goal: data.root,
-          minderId: this.minderChartBack._id
-        };
-        this.$store.dispatch("updateMinderChart", minderData);
-      } else {
-        let minderData = {
-          goal: data.root,
-          projectName: data.root.data.text,
-          type: "userProject"
-        };
-        this.$store.dispatch("setMinderChart", minderData).then(() => {
-          this.projectName = data.root.data.text;
-        });
-      }
+      let minderData = {
+        goal: data.root,
+        minderId: this.$route.params.id
+      };
+      this.$store.dispatch("updateMinderChart", minderData);
     },
     updateStakehold(data) {
-      if (this.projectName) {
-        let minderData = {
-          stakehold: data.root,
-          minderId: this.minderChartBack._id
-        };
-        this.$store.dispatch("updateMinderChart", minderData);
-      } else {
-        this.$msg.error("请先创建一个项目！");
-        localStorage.setItem("active", 0);
-        this.active = parseInt(localStorage.getItem("active"));
-      }
+      let minderData = {
+        stakehold: data.root,
+        minderId: this.$route.params.id
+      };
+      this.$store.dispatch("updateMinderChart", minderData);
     },
     updateTask(data) {
-      if (this.projectName) {
-        let minderData = {
-          task: data.root,
-          minderId: this.minderChartBack._id
-        };
-        this.$store.dispatch("updateMinderChart", minderData);
-      } else {
-        this.$msg.error("请先创建一个项目！");
-        localStorage.setItem("active", 0);
-        this.active = parseInt(localStorage.getItem("active"));
-      }
+      let minderData = {
+        task: data.root,
+        minderId: this.$route.params.id
+      };
+      this.$store.dispatch("updateMinderChart", minderData);
     }
   }
 };
