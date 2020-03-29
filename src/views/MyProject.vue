@@ -20,6 +20,7 @@
 </template>
 <script>
 export default {
+  inject: ["reload"],
   methods: {
     moreDetail(id) {
       localStorage.setItem("active", 0);
@@ -27,19 +28,16 @@ export default {
     },
     handleDelete(id) {
       this.$confirm("确认删除此项目？", "确认信息", {
-        distinguishCancelAndClose: true,
         confirmButtonText: "删除",
         cancelButtonText: "放弃删除"
       })
         .then(() => {
           this.$store.dispatch("deleteMinderChart", id);
-          this.$msg("删除成功！");
+          this.$msg.success("删除成功！");
+          this.reload();
         })
-        .catch(action => {
-          this.$message({
-            type: "info",
-            message: action === "cancel" ? "放弃删除" : "放弃删除"
-          });
+        .catch(() => {
+          this.$msg.info("放弃删除");
         });
     }
   },

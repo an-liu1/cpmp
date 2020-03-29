@@ -46,51 +46,31 @@ export default new Vuex.Store({
       await request("post", "register", data);
     },
     async getExampleMinderChart({ commit }) {
-      try {
-        let res = await request("get", `minder/minderGetExample`);
-        commit("getExampleMinder", res);
-      } catch (err) {
-        commit("getExampleMinder", err);
-      }
+      let res = await request("get", `minder/minderGetExample`);
+      commit("getExampleMinder", res.data);
     },
     async setMinderChart({ commit }, data) {
-      try {
-        let res = await request("post", "minder/minderSet", data);
-        commit("setMinderBcak", res);
-      } catch (err) {
-        commit("setMinderBcak", err);
-      }
+      let res = await request("post", "minder/minderSet", data);
+      commit("setMinderBcak", res.data);
     },
     async updateMinderChart({ commit }, data) {
-      try {
-        let res = await request(
-          "put",
-          `minder/minderUpdate/${data.minderId}`,
-          data
-        );
-        commit("setMinderBcak", res);
-      } catch (err) {
-        commit("setMinderBcak", err);
-      }
+      let res = await request(
+        "put",
+        `minder/minderUpdate/${data.minderId}`,
+        data
+      );
+      commit("setMinderBcak", res.data);
     },
     async getMinderChart({ commit }, data) {
-      try {
-        let res = await request("get", `minder/minderGet/${data}`);
-        commit("getMinder", res[0]);
-      } catch (err) {
-        commit("getMinder", err[0]);
-      }
+      let res = await request("get", `minder/minderGet/${data}`);
+      commit("getMinder", res.data[0]);
     },
     async deleteMinderChart(context, data) {
       await request("delete", `minder/minderDelete/${data}`);
     },
     async getAllMinders({ commit }) {
-      try {
-        let res = await request("get", "minder/minderGetAll");
-        commit("getAllMinders", res);
-      } catch (err) {
-        commit("getAllMinders", err);
-      }
+      let res = await request("get", "minder/minderGetAll");
+      commit("getAllMinders", res.data);
     }
   },
   modules: {}

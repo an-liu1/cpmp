@@ -12,7 +12,6 @@ axios.interceptors.request.use(
         Accept: "application/json",
         Authorization: localStorage.getItem("Authorization")
       };
-      // config.headers.Authorization = localStorage.getItem("Authorization");
     }
     config.timeout = 10 * 1000;
     return config;
