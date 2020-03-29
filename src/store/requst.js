@@ -1,7 +1,6 @@
 import axios from "axios";
 import { throwErr } from "@/utils";
 import store from "@/store";
-import router from "@/router";
 import { mainDomain } from "@/MainAPI.js";
 import Vue from "vue";
 
@@ -26,13 +25,6 @@ axios.interceptors.response.use(
     if (response.data.code === 0) {
       store.dispatch("logInResponse", response.data);
       return Promise.resolve(response.data);
-    } else if (response.data.code === 1401) {
-      Vue.prototype.$msg({
-        message: "Login Please!",
-        type: "error"
-      });
-      router.push("/login");
-      return Promise.reject(response.data);
     } else {
       return Promise.reject(response.data);
     }

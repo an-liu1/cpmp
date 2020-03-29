@@ -15,22 +15,25 @@ Vue.use(VueCompositionApi);
 import kityminder from "vue-kityminder-gg";
 Vue.use(kityminder);
 
-import Router from 'vue-router'
-Vue.use(Router)
-const originalPush = Router.prototype.push
+import Router from "vue-router";
+Vue.use(Router);
+const originalPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
-}
+  return originalPush.call(this, location).catch(err => err);
+};
 
-
-router.beforeEach((to,from,next) => {
+router.beforeEach((to, from, next) => {
   const role = localStorage.getItem("Authorization");
   // if (!to.matched.some(route => route.meta.permission)) {
-    if (!role && to.path !== "/login") {
-      next("/login");
-    } else {
-      next();
-    }
+  if (!role && to.path !== "/login") {
+    Vue.prototype.$msg({
+      message: "Login Please!",
+      type: "error"
+    });
+    next("/login");
+  } else {
+    next();
+  }
   // } else {
   //   next();
   // }
