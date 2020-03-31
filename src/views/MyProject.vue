@@ -22,6 +22,9 @@
 export default {
   inject: ["reload"],
   methods: {
+    getReload() {
+      this.reload();
+    },
     moreDetail(id) {
       localStorage.setItem("active", 0);
       this.$router.push(`/project/${id}`);
@@ -34,7 +37,7 @@ export default {
         .then(() => {
           this.$store.dispatch("deleteMinderChart", id);
           this.$msg.success("删除成功！");
-          this.reload();
+          this.getReload();
         })
         .catch(() => {
           this.$msg.info("放弃删除");

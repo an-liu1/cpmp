@@ -12,8 +12,14 @@ import Message from "vue-m-message";
 Vue.use(Message, { name: "msg" });
 import VueCompositionApi from "@vue/composition-api";
 Vue.use(VueCompositionApi);
+import moment from "moment";
+Vue.prototype.moment = moment;
 import kityminder from "vue-kityminder-gg";
 Vue.use(kityminder);
+import VueLodash from 'vue-lodash'
+import lodash from 'lodash'
+ 
+Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 
 import Router from "vue-router";
 Vue.use(Router);
