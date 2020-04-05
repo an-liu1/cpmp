@@ -183,9 +183,6 @@ export default {
     };
   },
   computed: {
-    minderData: function() {
-      return this.$store.state.minderData;
-    },
     exampleMinder: function() {
       return this.$store.state.exampleMinder[0];
     },
@@ -215,6 +212,9 @@ export default {
       let s = parseInt(localStorage.getItem("active"));
       localStorage.setItem("active", s + 1);
       this.active = parseInt(localStorage.getItem("active"));
+      if (this.active === 1) {
+        this.exampleMinder.stakehold.children[2].children = this.minderChartBack.goal.children[1].children;
+      }
     },
     preS() {
       let s = parseInt(localStorage.getItem("active"));
@@ -276,9 +276,9 @@ export default {
           tasks: {
             data: data.map(i => {
               return {
-                duration: 3,
-                end_date: new Date().addDays(3),
-                progress: 0.2,
+                duration: 1,
+                end_date: new Date().addDays(1),
+                progress: 0.1,
                 start_date: new Date(),
                 text: i
               };
@@ -417,8 +417,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.finish{
-  h1:hover{
+.finish {
+  h1:hover {
     cursor: pointer;
   }
 }

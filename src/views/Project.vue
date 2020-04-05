@@ -135,7 +135,9 @@ export default {
         { index: 1, title: "项目干系人及需求" },
         { index: 2, title: "工作任务" },
         { index: 3, title: "项目计划" }
-      ]
+      ],
+      flag: true,
+      planDataList: []
     };
   },
   computed: {
@@ -166,11 +168,41 @@ export default {
       let s = parseInt(localStorage.getItem("active"));
       localStorage.setItem("active", s + 1);
       this.active = parseInt(localStorage.getItem("active"));
+      this.getPlanTask(
+        this.minderDataList.task.children[1].children,
+        this.minderDataList.stakehold.children[1].children
+      );
+      console.log(this.planDataList);
     },
     preS() {
       let s = parseInt(localStorage.getItem("active"));
       localStorage.setItem("active", s - 1);
       this.active = parseInt(localStorage.getItem("active"));
+    },
+    getPlanTask(stakehold, task) {
+      if (this.flag === true) {
+        stakehold.map(i => {
+          task.map(y => {
+            if (i.data.text == y.data.text) {
+              console.log(456);
+              return this.getPlanTask(i.children, y.children);
+            } else if (
+              i.data.id === null ||
+              i.data.id === undefined ||
+              i.data.id === ""
+            ) {
+              console.log(123);   
+              this.planDataList.push(123);
+            } else if (
+              y.data.id === null ||
+              y.data.id === undefined ||
+              y.data.id === ""
+            ) {
+              this.flag = false;
+            }
+          });
+        });
+      }
     },
     updateGoal(data) {
       let minderData = {
@@ -325,8 +357,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.finish{
-  h1:hover{
+.finish {
+  h1:hover {
     cursor: pointer;
   }
 }

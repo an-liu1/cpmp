@@ -11,13 +11,16 @@
   >
     <el-submenu index="1" class="float-right">
       <template slot="title">
-        <el-avatar
-          src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-        ></el-avatar>
-        Andy Liu</template
+        <el-avatar class="mr-1" :src="avatar"></el-avatar>
+        {{ userInfo.username }}</template
       >
-      <el-menu-item index="1-1" class="text-center">我的信息</el-menu-item>
-      <el-menu-item index="1-2" class="text-center">修改密码</el-menu-item>
+      <el-menu-item
+        index="1-1"
+        class="text-center"
+        @click="$router.push('/myinfo')"
+        >我的信息</el-menu-item
+      >
+      <!-- <el-menu-item index="1-2" class="text-center">修改密码</el-menu-item> -->
       <el-menu-item index="/login" @click="logout" class="text-center"
         >退出登录</el-menu-item
       >
@@ -26,11 +29,22 @@
 </template>
 
 <script>
-import { ref } from "@vue/composition-api";
+import { ref, onMounted, computed } from "@vue/composition-api";
+import { mainDomain } from "@/MainAPI.js";
 export default {
   name: "Header",
-  setup() {
+  setup(props, { root: { $store } }) {
+    onMounted(() => {
+      $store.dispatch("getUserInfo");
+    });
     const activeIndex = ref("1");
+    const userInfo = computed(() => {
+      return $store.state.userInfo;
+    });
+
+    const avatar = computed(() => {
+      return mainDomain + userInfo.value.avatar;
+    });
 
     function handleSelect(key, keyPath) {
       key, keyPath;
@@ -42,9 +56,11 @@ export default {
     return {
       activeIndex,
       handleSelect,
-      logout
+      logout,
+      userInfo,
+      avatar,
     };
-  }
+  },
 };
 </script>
 

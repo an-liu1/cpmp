@@ -18,7 +18,6 @@ import kityminder from "vue-kityminder-gg";
 Vue.use(kityminder);
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
- 
 Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 
 import Router from "vue-router";
@@ -31,9 +30,9 @@ Router.prototype.push = function push(location) {
 router.beforeEach((to, from, next) => {
   const role = localStorage.getItem("Authorization");
   // if (!to.matched.some(route => route.meta.permission)) {
-  if (!role && to.path !== "/login") {
+  if (!role && to.path !== "/login" && to.path !== "/") {
     Vue.prototype.$msg({
-      message: "Login Please!",
+      message: "请登录!",
       type: "error"
     });
     next("/login");
