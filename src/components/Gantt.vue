@@ -12,18 +12,18 @@ export default {
       type: Object,
       default() {
         return { data: [], links: [] };
-      }
-    }
+      },
+    },
   },
 
-  mounted: function() {
+  mounted: function () {
     gantt.config.xml_date = "%Y-%m-%d";
 
     gantt.init(this.$refs.gantt);
     gantt.createDataProcessor((entity, action, data, id) => {
       this.$emit(`${entity}-updated`, id, action, data);
     });
-    gantt.attachEvent("onTaskSelected", id => {
+    gantt.attachEvent("onTaskSelected", (id) => {
       let task = gantt.getTask(id);
       this.$emit("task-selected", task);
     });
@@ -34,7 +34,7 @@ export default {
       }
     });
     gantt.parse(this.$props.tasks);
-  }
+  },
 };
 </script>
 

@@ -119,13 +119,13 @@ import Gantt from "@/components/Gantt.vue";
 export default {
   components: {
     mindercomponent,
-    Gantt
+    Gantt,
   },
   data() {
     return {
       tasks: {
         data: [],
-        links: []
+        links: [],
       },
       messages: [],
       selectedTask: null,
@@ -134,16 +134,15 @@ export default {
         { index: 0, title: "目标和团队" },
         { index: 1, title: "项目干系人及需求" },
         { index: 2, title: "工作任务" },
-        { index: 3, title: "项目计划" }
+        { index: 3, title: "项目计划" },
       ],
       flag: true,
-      planDataList: []
     };
   },
   computed: {
-    minderDataList: function() {
+    minderDataList: function () {
       return this.$store.state.minderData;
-    }
+    },
   },
   filters: {
     toPercent(val) {
@@ -152,7 +151,7 @@ export default {
     },
     niceDate(obj) {
       return `${obj.getFullYear()} / ${obj.getMonth() + 1} / ${obj.getDate()}`;
-    }
+    },
   },
   mounted() {
     this.active = parseInt(localStorage.getItem("active")) || 0;
@@ -168,60 +167,33 @@ export default {
       let s = parseInt(localStorage.getItem("active"));
       localStorage.setItem("active", s + 1);
       this.active = parseInt(localStorage.getItem("active"));
-      this.getPlanTask(
-        this.minderDataList.task.children[1].children,
-        this.minderDataList.stakehold.children[1].children
-      );
-      console.log(this.planDataList);
+      if(this.active == 3){
+        this.$router.go(0);
+      }
     },
     preS() {
       let s = parseInt(localStorage.getItem("active"));
       localStorage.setItem("active", s - 1);
       this.active = parseInt(localStorage.getItem("active"));
     },
-    getPlanTask(stakehold, task) {
-      if (this.flag === true) {
-        stakehold.map(i => {
-          task.map(y => {
-            if (i.data.text == y.data.text) {
-              console.log(456);
-              return this.getPlanTask(i.children, y.children);
-            } else if (
-              i.data.id === null ||
-              i.data.id === undefined ||
-              i.data.id === ""
-            ) {
-              console.log(123);   
-              this.planDataList.push(123);
-            } else if (
-              y.data.id === null ||
-              y.data.id === undefined ||
-              y.data.id === ""
-            ) {
-              this.flag = false;
-            }
-          });
-        });
-      }
-    },
     updateGoal(data) {
       let minderData = {
         goal: data.root,
-        minderId: this.$route.params.id
+        minderId: this.$route.params.id,
       };
       this.$store.dispatch("updateMinderChart", minderData);
     },
     updateStakehold(data) {
       let minderData = {
         stakehold: data.root,
-        minderId: this.$route.params.id
+        minderId: this.$route.params.id,
       };
       this.$store.dispatch("updateMinderChart", minderData);
     },
     updateTask(data) {
       let minderData = {
         task: data.root,
-        minderId: this.$route.params.id
+        minderId: this.$route.params.id,
       };
       this.$store.dispatch("updateMinderChart", minderData);
     },
@@ -232,6 +204,7 @@ export default {
       }
     },
     logTaskUpdate(id, mode, task) {
+      console.log(task);
       let text = task && task.text ? ` (${task.text})` : "";
       switch (mode) {
         case "update":
@@ -247,27 +220,21 @@ export default {
       let time = this.moment().format("YYYY-MM-DD,h:mm:ss");
       let message = `工作任务${mode}: ${text}, ${time}`;
       this.addMessage(message);
-      if (
-        this.minderDataList.plan.tasks.data.filter(i => {
-          if (i.id == task.id) {
-            return i;
-          }
-        }).length == 0
-      ) {
+      if (task["!nativeeditor_status"] == "inserted") {
         this.minderDataList.plan.tasks.data.push(task);
         let minderData = {
           plan: {
             tasks: {
               data: this.minderDataList.plan.tasks.data,
-              links: this.minderDataList.plan.tasks.links
+              links: this.minderDataList.plan.tasks.links,
             },
-            messages: this.messages
+            messages: this.messages,
           },
-          minderId: this.$route.params.id
+          minderId: this.$route.params.id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
-      } else {
-        let taskData = this.minderDataList.plan.tasks.data.map(i => {
+      } else if (task["!nativeeditor_status"] == "updated") {
+        let taskData = this.minderDataList.plan.tasks.data.map((i) => {
           if (i.id == task.id) {
             return (i = task);
           } else {
@@ -278,11 +245,25 @@ export default {
           plan: {
             tasks: {
               data: taskData,
-              links: this.minderDataList.plan.tasks.links
+              links: this.minderDataList.plan.tasks.links,
             },
-            messages: this.messages
+            messages: this.messages,
           },
-          minderId: this.$route.params.id
+          minderId: this.$route.params.id,
+        };
+        this.$store.dispatch("updateMinderChart", minderData);
+      } else if (task["!nativeeditor_status"] == "deleted") {
+        let minderData = {
+          plan: {
+            tasks: {
+              data: this.minderDataList.plan.tasks.data.filter(
+                (i) => i.id !== task.id
+              ),
+              links: this.minderDataList.plan.tasks.links,
+            },
+            messages: this.messages,
+          },
+          minderId: this.$route.params.id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
       }
@@ -302,7 +283,7 @@ export default {
       let time = this.moment().format("YYYY-MM-DD,h:mm:ss");
       let message = `工作链${mode}:`;
       if (link) {
-        this.minderDataList.plan.tasks.data.map(i => {
+        this.minderDataList.plan.tasks.data.map((i) => {
           if (i.id == link.source) {
             return (link.sourceName = i.text);
           } else if (i.id == link.target) {
@@ -325,34 +306,34 @@ export default {
           plan: {
             tasks: {
               data: this.minderDataList.plan.tasks.data,
-              links: this.minderDataList.plan.tasks.links
+              links: this.minderDataList.plan.tasks.links,
             },
-            messages: this.messages
+            messages: this.messages,
           },
-          minderId: this.$route.params.id
+          minderId: this.$route.params.id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
       } else if (link["!nativeeditor_status"] == "deleted") {
         let linkData = this.minderDataList.plan.tasks.links.filter(
-          i => i.id != link.id
+          (i) => i.id != link.id
         );
         let minderData = {
           plan: {
             tasks: {
               data: this.minderDataList.plan.tasks.data,
-              links: linkData
+              links: linkData,
             },
-            messages: this.messages
+            messages: this.messages,
           },
-          minderId: this.$route.params.id
+          minderId: this.$route.params.id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
       }
     },
-    selectTask: function(task) {
+    selectTask: function (task) {
       this.selectedTask = task;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -53,7 +53,6 @@
       <mindercomponent
         @updateData="updateTask"
         @saveData="updateTask"
-        @planData="planData"
         :importData="
           !minderChartBack.stakehold
             ? {}
@@ -135,10 +134,12 @@
 <script>
 import mindercomponent from "@/components/Minder.vue";
 import Gantt from "@/components/Gantt.vue";
+import { diffString } from "json-diff";
 export default {
+  inject: ["reload"],
   components: {
     mindercomponent,
-    Gantt
+    Gantt,
   },
   data() {
     return {
@@ -168,7 +169,7 @@ export default {
           //   text: "新任務"
           // }
         ],
-        links: []
+        links: [],
       },
       messages: [],
       selectedTask: null,
@@ -177,18 +178,18 @@ export default {
         { index: 0, title: "目标和团队" },
         { index: 1, title: "项目干系人及需求" },
         { index: 2, title: "工作任务" },
-        { index: 3, title: "项目计划" }
+        { index: 3, title: "项目计划" },
       ],
-      projectName: ""
+      projectName: "",
     };
   },
   computed: {
-    exampleMinder: function() {
+    exampleMinder: function () {
       return this.$store.state.exampleMinder[0];
     },
-    minderChartBack: function() {
+    minderChartBack: function () {
       return this.$store.state.minderChartBack;
-    }
+    },
   },
   filters: {
     toPercent(val) {
@@ -197,7 +198,7 @@ export default {
     },
     niceDate(obj) {
       return `${obj.getFullYear()} / ${obj.getMonth() + 1} / ${obj.getDate()}`;
-    }
+    },
   },
   mounted() {
     this.active = parseInt(localStorage.getItem("active")) || 0;
@@ -208,12 +209,60 @@ export default {
       localStorage.setItem("active", val);
       this.active = parseInt(localStorage.getItem("active"));
     },
+
     nextS() {
       let s = parseInt(localStorage.getItem("active"));
       localStorage.setItem("active", s + 1);
       this.active = parseInt(localStorage.getItem("active"));
       if (this.active === 1) {
         this.exampleMinder.stakehold.children[2].children = this.minderChartBack.goal.children[1].children;
+      } else if (this.active === 3) {
+        // console.log(
+        //   diff(this.minderChartBack.stakehold, this.minderChartBack.task)
+        // );
+        Date.prototype.addDays = function (days) {
+          var date = new Date(this.valueOf());
+          date.setDate(date.getDate() + days);
+          return date;
+        };
+        // if (this.minderChartBack.plan.tasks.data.length === 0) {
+        let planDataList = {
+          tasks: {
+            data: [],
+          },
+        };
+        diffString(this.minderChartBack.stakehold, this.minderChartBack.task)
+          .split("text")
+          .map((i, key) => {
+            if (key !== 0) {
+              i.split('"').map((y, k) => {
+                if (k === 1) {
+                  planDataList.tasks.data.push({
+                    duration: 1,
+                    end_date: new Date().addDays(1),
+                    progress: 0.1,
+                    start_date: new Date(),
+                    text: y,
+                  });
+                }
+              });
+            }
+          });
+        if (
+          this.minderChartBack.plan.tasks.data.length !==
+          planDataList.tasks.data.length
+        ) {
+          let minderData = {
+            plan: planDataList,
+            minderId: this.minderChartBack._id,
+          };
+          this.$store.dispatch("updateMinderChart", minderData);
+          this.$router.go(0);
+          // this.reload();
+        }
+        // }
+        // this.reload();
+        this.$router.go(0);
       }
     },
     preS() {
@@ -222,17 +271,17 @@ export default {
       this.active = parseInt(localStorage.getItem("active"));
     },
     updateGoal(data) {
-      if (this.projectName) {
+      if (this.projectName || this.minderChartBack._id) {
         let minderData = {
           goal: data.root,
-          minderId: this.minderChartBack._id
+          minderId: this.minderChartBack._id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
       } else {
         let minderData = {
           goal: data.root,
           projectName: data.root.data.text,
-          type: "userProject"
+          type: "userProject",
         };
         this.$store.dispatch("setMinderChart", minderData).then(() => {
           this.projectName = data.root.data.text;
@@ -240,10 +289,10 @@ export default {
       }
     },
     updateStakehold(data) {
-      if (this.projectName) {
+      if (this.projectName || this.minderChartBack._id) {
         let minderData = {
           stakehold: data.root,
-          minderId: this.minderChartBack._id
+          minderId: this.minderChartBack._id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
       } else {
@@ -253,10 +302,10 @@ export default {
       }
     },
     updateTask(data) {
-      if (this.projectName) {
+      if (this.projectName || this.minderChartBack._id) {
         let minderData = {
           task: data.root,
-          minderId: this.minderChartBack._id
+          minderId: this.minderChartBack._id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
       } else {
@@ -265,33 +314,33 @@ export default {
         this.active = parseInt(localStorage.getItem("active"));
       }
     },
-    planData(data) {
-      if (this.active == 2) {
-        Date.prototype.addDays = function(days) {
-          var date = new Date(this.valueOf());
-          date.setDate(date.getDate() + days);
-          return date;
-        };
-        let planDataList = {
-          tasks: {
-            data: data.map(i => {
-              return {
-                duration: 1,
-                end_date: new Date().addDays(1),
-                progress: 0.1,
-                start_date: new Date(),
-                text: i
-              };
-            })
-          }
-        };
-        let minderData = {
-          plan: planDataList,
-          minderId: this.minderChartBack._id
-        };
-        this.$store.dispatch("updateMinderChart", minderData);
-      }
-    },
+    // planData(data) {
+    //   if (this.active == 2) {
+    //     Date.prototype.addDays = function (days) {
+    //       var date = new Date(this.valueOf());
+    //       date.setDate(date.getDate() + days);
+    //       return date;
+    //     };
+    //     let planDataList = {
+    //       tasks: {
+    //         data: data.map((i) => {
+    //           return {
+    //             duration: 1,
+    //             end_date: new Date().addDays(1),
+    //             progress: 0.1,
+    //             start_date: new Date(),
+    //             text: i,
+    //           };
+    //         }),
+    //       },
+    //     };
+    //     let minderData = {
+    //       plan: planDataList,
+    //       minderId: this.minderChartBack._id,
+    //     };
+    //     this.$store.dispatch("updateMinderChart", minderData);
+    //   }
+    // },
     addMessage(message) {
       this.messages.unshift(message);
       if (this.messages.length > 40) {
@@ -314,27 +363,21 @@ export default {
       let time = this.moment().format("YYYY-MM-DD,h:mm:ss");
       let message = `工作任务${mode}: ${text}, ${time}`;
       this.addMessage(message);
-      if (
-        this.minderDataList.plan.tasks.data.filter(i => {
-          if (i.id == task.id) {
-            return i;
-          }
-        }).length == 0
-      ) {
+      if (task["!nativeeditor_status"] == "inserted") {
         this.minderDataList.plan.tasks.data.push(task);
         let minderData = {
           plan: {
             tasks: {
               data: this.minderDataList.plan.tasks.data,
-              links: this.minderDataList.plan.tasks.links
+              links: this.minderDataList.plan.tasks.links,
             },
-            messages: this.messages
+            messages: this.messages,
           },
-          minderId: this.$route.params.id
+          minderId: this.$route.params.id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
-      } else {
-        let taskData = this.minderDataList.plan.tasks.data.map(i => {
+      } else if (task["!nativeeditor_status"] == "updated") {
+        let taskData = this.minderDataList.plan.tasks.data.map((i) => {
           if (i.id == task.id) {
             return (i = task);
           } else {
@@ -345,11 +388,25 @@ export default {
           plan: {
             tasks: {
               data: taskData,
-              links: this.minderDataList.plan.tasks.links
+              links: this.minderDataList.plan.tasks.links,
             },
-            messages: this.messages
+            messages: this.messages,
           },
-          minderId: this.$route.params.id
+          minderId: this.$route.params.id,
+        };
+        this.$store.dispatch("updateMinderChart", minderData);
+      } else if (task["!nativeeditor_status"] == "deleted") {
+        let minderData = {
+          plan: {
+            tasks: {
+              data: this.minderDataList.plan.tasks.data.filter(
+                (i) => i.id !== task.id
+              ),
+              links: this.minderDataList.plan.tasks.links,
+            },
+            messages: this.messages,
+          },
+          minderId: this.$route.params.id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
       }
@@ -369,7 +426,7 @@ export default {
       let time = this.moment().format("YYYY-MM-DD,h:mm:ss");
       let message = `工作链${mode}:`;
       if (link) {
-        this.minderDataList.plan.tasks.data.map(i => {
+        this.minderDataList.plan.tasks.data.map((i) => {
           if (i.id == link.source) {
             return (link.sourceName = i.text);
           } else if (i.id == link.target) {
@@ -385,34 +442,34 @@ export default {
           plan: {
             tasks: {
               data: this.minderDataList.plan.tasks.data,
-              links: this.minderDataList.plan.tasks.links
+              links: this.minderDataList.plan.tasks.links,
             },
-            messages: this.messages
+            messages: this.messages,
           },
-          minderId: this.$route.params.id
+          minderId: this.$route.params.id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
       } else if (link["!nativeeditor_status"] == "deleted") {
         let linkData = this.minderDataList.plan.tasks.links.filter(
-          i => i.id != link.id
+          (i) => i.id != link.id
         );
         let minderData = {
           plan: {
             tasks: {
               data: this.minderDataList.plan.tasks.data,
-              links: linkData
+              links: linkData,
             },
-            messages: this.messages
+            messages: this.messages,
           },
-          minderId: this.$route.params.id
+          minderId: this.$route.params.id,
         };
         this.$store.dispatch("updateMinderChart", minderData);
       }
     },
-    selectTask: function(task) {
+    selectTask: function (task) {
       this.selectedTask = task;
-    }
-  }
+    },
+  },
 };
 </script>
 
