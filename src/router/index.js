@@ -8,12 +8,17 @@ const routes = [
   {
     path: "/",
     name: "Welcome",
-    component: Welcome
+    component: Welcome,
   },
   {
     path: "/login",
     name: "login",
-    component: () => import("../views/Login.vue")
+    component: () => import("../views/Login.vue"),
+  },
+  {
+    path: "/resetpassword/:email/:code/:reset",
+    name: "resetpassword",
+    component: () => import("../views/ResetPassword.vue"),
   },
   {
     path: "/dashboard",
@@ -23,39 +28,39 @@ const routes = [
       {
         path: "/",
         name: "homepage",
-        component: () => import("../views/Homepage.vue")
+        component: () => import("../views/Homepage.vue"),
       },
       {
         path: "/project/:id",
         name: "project",
-        component: () => import("../views/Project.vue")
+        component: () => import("../views/Project.vue"),
       },
       {
         path: "/newproject",
         name: "newproject",
-        component: () => import("../views/NewProject.vue")
+        component: () => import("../views/NewProject.vue"),
       },
       {
         path: "/exampleproject",
         name: "exampleproject",
-        component: () => import("../views/ExampleProject.vue")
+        component: () => import("../views/ExampleProject.vue"),
       },
       {
         path: "/myprojects",
         name: "myprojects",
-        component: () => import("../views/MyProject.vue")
-      },      
+        component: () => import("../views/MyProject.vue"),
+      },
       {
         path: "/myinfo",
         name: "myinfo",
-        component: () => import("../views/MyInfo.vue")
-      }
-    ]
-  }
+        component: () => import("../views/MyInfo.vue"),
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
-  routes
+  routes,
 });
 
 export default router;

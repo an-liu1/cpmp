@@ -167,9 +167,9 @@ export default {
       let s = parseInt(localStorage.getItem("active"));
       localStorage.setItem("active", s + 1);
       this.active = parseInt(localStorage.getItem("active"));
-      if(this.active == 3){
-        this.$router.go(0);
-      }
+      // if(this.active == 3){
+        // this.$router.go(0);
+      // }
     },
     preS() {
       let s = parseInt(localStorage.getItem("active"));

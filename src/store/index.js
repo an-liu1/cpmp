@@ -43,11 +43,17 @@ export default new Vuex.Store({
       commit("logInResponse", data);
     },
     async login(context, data) {
-      let res = await request("post", "login", data);
+      let res = await request("post", "freepmo/login", data);
       localStorage.setItem("Authorization", res.token);
     },
     async signup(context, data) {
-      await request("post", "register", data);
+      await request("post", "freepmo/register", data);
+    },
+    async requestReset(context, data) {
+      await request("post", "freepmo/requestReset", data);
+    },
+    async resetPassword(context, data) {
+      await request("post", "freepmo/resetPassword", data);
     },
     async getUserInfo({ commit }) {
       let res = await request("get", "freepmo/getUserInfo");

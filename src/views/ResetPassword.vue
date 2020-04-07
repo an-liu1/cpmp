@@ -5,74 +5,37 @@
         <img src="../assets/logo.png" alt="logo" class="logo" />
       </div>
       <div v-if="login">
-        <p class="text-tips">你好，欢迎登录</p>
+        <p class="text-tips">请输入邮箱重置密码！</p>
         <form action="" class="login-form">
           <div class="m-list-group">
             <div class="m-list-group-item">
               <input
                 type="email"
-                placeholder="Email"
+                placeholder="邮箱"
                 class="m-input"
                 name="email"
                 v-model="email"
               />
             </div>
-            <div class="m-list-group-item">
-              <input
-                type="password"
-                placeholder="Password"
-                class="m-input"
-                name="password"
-                v-model="password"
-              />
-            </div>
           </div>
-          <el-row :gutter="20">
-            <el-col :span="12"
-              ><button
-                class="m-btn sub select-none"
-                @click.prevent="handleLogin"
-                v-loading="isLoging"
-              >
-                登录
-              </button></el-col
-            >
-            <el-col :span="12"
-              ><button class="m-btn sub select-none" @click="login = !login">
-                注册
-              </button></el-col
-            >
-          </el-row>
-          <p class="text-t" @click="$router.push('resetpassword/1/1/false')">忘记密码? 点击重置密码</p>
+
+          <button
+            class="m-btn sub select-none"
+            @click.prevent="handleRequestRest"
+            v-loading="isLoging"
+          >
+            发送
+          </button>
         </form>
       </div>
       <div v-if="!login">
-        <p class="text-tips">用户注册</p>
+        <p class="text-tips">密码重置</p>
         <form action="" class="login-form">
           <div class="m-list-group">
             <div class="m-list-group-item">
               <input
-                type="text"
-                placeholder="Username"
-                class="m-input"
-                name="username"
-                v-model="Susername"
-              />
-            </div>
-            <div class="m-list-group-item">
-              <input
-                type="email"
-                placeholder="Email"
-                class="m-input"
-                name="email"
-                v-model="Semail"
-                required
-              />
-            </div>
-            <div class="m-list-group-item">
-              <input
                 type="password"
-                placeholder="Password"
+                placeholder="密码"
                 class="m-input"
                 name="password"
                 v-model="Spassword"
@@ -81,22 +44,19 @@
             <div class="m-list-group-item">
               <input
                 type="password"
-                placeholder="Comfirm Password"
+                placeholder="确认密码"
                 class="m-input"
                 name="comfirmPassword"
                 v-model="ScomfirmPassword"
               />
             </div>
           </div>
-          <p class="text-tips fff" @click.prevent="login = !login">
-            已有账户？点击登录
-          </p>
           <button
             class="m-btn sub select-none"
-            @click.prevent="handleSignUp"
+            @click.prevent="handleRestPassword"
             v-loading="isLoging"
           >
-            注册
+            确认
           </button>
         </form>
       </div>
@@ -125,9 +85,6 @@ export default {
       login: true,
       email: "",
       username: "",
-      password: "",
-      Semail: "",
-      Susername: "",
       Spassword: "",
       ScomfirmPassword: "",
       isLoging: false,
@@ -136,60 +93,44 @@ export default {
       appName: "Ai FreePMO",
     };
   },
+  mounted() {
+    if (this.$route.params.reset) {
+      this.login = false;
+    }
+  },
   methods: {
-    handleLogin() {
-      if (!this.email || !this.password) {
-        return this.$msg.warning("用户名和密码不能为空！");
-      }
+    handleRequestRest() {
       this.isLoging = true;
-
-      let data = {
-        email: this.email,
-        password: this.password,
-      };
       this.$store
-        .dispatch("login", data)
+        .dispatch("requestReset", { email: this.email })
         .then(() => {
-          this.$router.push("/dashboard");
-          this.$msg.success("登录成功!");
+          this.$router.push("/login");
+          this.$msg.success(
+            "密码重置请求发送成功，请登录邮箱查看邮件并充值密码!"
+          );
           this.isLoging = false;
         })
         .catch(() => {
-          // this.$msg.error(this.$store.state.message);
           this.isLoging = false;
         });
     },
-    handleSignUp() {
-      let re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
-      if (
-        !this.Semail ||
-        !this.Susername ||
-        !this.Spassword ||
-        !this.ScomfirmPassword
-      ) {
-        this.$msg.warning("请输入账号密码！");
-      } else if (this.Spassword !== this.ScomfirmPassword) {
+    handleRestPassword() {
+      if (this.Spassword !== this.ScomfirmPassword) {
         this.$msg.warning("密码不匹配！");
-      } else if (!re.test(this.Semail)) {
-        this.$msg.warning("邮箱格式不对！");
       } else {
         this.isLoging = true;
 
-        let data = {
-          email: this.Semail,
-          username: this.Susername,
-          password: this.Spassword,
-        };
-
         this.$store
-          .dispatch("signup", data)
+          .dispatch("resetPassword", {
+            email: this.$route.params.email,
+            password: this.Spassword,
+          })
           .then(() => {
-            this.$msg.success("注册成功, 请登录邮箱激活用户！");
+            this.$msg.success("密码修改成功, 请登录！");
+            this.$router.push("/login");
             this.isLoging = false;
-            this.login = true;
           })
           .catch(() => {
-            this.login = false;
             this.isLoging = false;
           });
       }

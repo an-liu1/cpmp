@@ -16,24 +16,29 @@ import moment from "moment";
 Vue.prototype.moment = moment;
 import kityminder from "vue-kityminder-gg";
 Vue.use(kityminder);
-import VueLodash from 'vue-lodash'
-import lodash from 'lodash'
-Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
+import VueLodash from "vue-lodash";
+import lodash from "lodash";
+Vue.use(VueLodash, { name: "custom", lodash: lodash });
 
 import Router from "vue-router";
 Vue.use(Router);
 const originalPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err);
+  return originalPush.call(this, location).catch((err) => err);
 };
 
 router.beforeEach((to, from, next) => {
   const role = localStorage.getItem("Authorization");
   // if (!to.matched.some(route => route.meta.permission)) {
-  if (!role && to.path !== "/login" && to.path !== "/") {
+  if (
+    !role &&
+    to.path !== "/login" &&
+    to.path !== "/" &&
+    !to.path.startsWith('/resetpassword')
+  ) {
     Vue.prototype.$msg({
       message: "请登录!",
-      type: "error"
+      type: "error",
     });
     next("/login");
   } else {
@@ -47,5 +52,5 @@ router.beforeEach((to, from, next) => {
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");
