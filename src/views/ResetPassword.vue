@@ -94,7 +94,7 @@ export default {
     };
   },
   mounted() {
-    if (this.$route.params.reset) {
+    if (this.$route.params.reset === "true") {
       this.login = false;
     }
   },
