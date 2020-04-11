@@ -43,7 +43,9 @@
               </button></el-col
             >
           </el-row>
-          <p class="text-t" @click="$router.push('resetpassword/1/1/false')">忘记密码? 点击重置密码</p>
+          <p class="text-t" @click="$router.push('resetpassword/1/1/false')">
+            忘记密码? 点击重置密码
+          </p>
         </form>
       </div>
       <div v-if="!login">
@@ -133,7 +135,7 @@ export default {
       isLoging: false,
       author: "Andy",
       version: "v0.1.0",
-      appName: "Ai FreePMO",
+      appName: "Ai FreePMO"
     };
   },
   methods: {
@@ -145,7 +147,7 @@ export default {
 
       let data = {
         email: this.email,
-        password: this.password,
+        password: this.password
       };
       this.$store
         .dispatch("login", data)
@@ -161,6 +163,7 @@ export default {
     },
     handleSignUp() {
       let re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
+      let passwordFormat = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
       if (
         !this.Semail ||
         !this.Susername ||
@@ -172,13 +175,17 @@ export default {
         this.$msg.warning("密码不匹配！");
       } else if (!re.test(this.Semail)) {
         this.$msg.warning("邮箱格式不对！");
+      } else if (this.Spassword.length < 8) {
+        this.$msg.error("密码长度要至少八位！");
+      } else if (!passwordFormat.test(this.Spassword)) {
+        this.$msg.error("密码至少含有一个字母和一个数字！");
       } else {
         this.isLoging = true;
 
         let data = {
           email: this.Semail,
           username: this.Susername,
-          password: this.Spassword,
+          password: this.Spassword
         };
 
         this.$store
@@ -193,8 +200,8 @@ export default {
             this.isLoging = false;
           });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

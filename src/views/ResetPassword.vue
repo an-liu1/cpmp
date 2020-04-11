@@ -90,7 +90,7 @@ export default {
       isLoging: false,
       author: "Andy",
       version: "v0.1.0",
-      appName: "Ai FreePMO",
+      appName: "Ai FreePMO"
     };
   },
   mounted() {
@@ -115,15 +115,20 @@ export default {
         });
     },
     handleRestPassword() {
+      let passwordFormat = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
       if (this.Spassword !== this.ScomfirmPassword) {
         this.$msg.warning("密码不匹配！");
+      } else if (this.Spassword.length < 8) {
+        this.$msg.error("密码长度要至少八位！");
+      } else if (!passwordFormat.test(this.Spassword)) {
+        this.$msg.error("密码至少含有一个字母和一个数字！");
       } else {
         this.isLoging = true;
 
         this.$store
           .dispatch("resetPassword", {
             email: this.$route.params.email,
-            password: this.Spassword,
+            password: this.Spassword
           })
           .then(() => {
             this.$msg.success("密码修改成功, 请登录！");
@@ -134,8 +139,8 @@ export default {
             this.isLoging = false;
           });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
