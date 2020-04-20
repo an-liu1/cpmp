@@ -257,12 +257,12 @@ export default {
             minderId: this.minderChartBack._id,
           };
           this.$store.dispatch("updateMinderChart", minderData);
-          // this.$router.go(0);
+          this.$router.go(0);
           // this.reload();
         }
         // }
         // this.reload();
-        // this.$router.go(0);
+        this.$router.go(0);
       }
     },
     preS() {

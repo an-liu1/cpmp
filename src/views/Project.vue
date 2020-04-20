@@ -47,7 +47,11 @@
       <mindercomponent
         @updateData="updateTask"
         @saveData="updateTask"
-        :importData="minderDataList.task"
+        :importData="
+          !Object.keys(minderDataList.task).length === 1
+            ? minderDataList.task
+            : minderDataList.stakehold
+        "
       />
       <el-button type="primary" class="float-right mr-5" @click="nextS"
         >下一步</el-button
@@ -116,6 +120,7 @@
 <script>
 import mindercomponent from "@/components/Minder.vue";
 import Gantt from "@/components/Gantt.vue";
+import { diffString } from "json-diff";
 export default {
   components: {
     mindercomponent,
@@ -140,7 +145,7 @@ export default {
     };
   },
   computed: {
-    minderDataList: function () {
+    minderDataList: function() {
       return this.$store.state.minderData;
     },
   },
@@ -167,9 +172,47 @@ export default {
       let s = parseInt(localStorage.getItem("active"));
       localStorage.setItem("active", s + 1);
       this.active = parseInt(localStorage.getItem("active"));
-      // if(this.active == 3){
-        // this.$router.go(0);
-      // }
+      if (this.active === 3) {
+        Date.prototype.addDays = function(days) {
+          var date = new Date(this.valueOf());
+          date.setDate(date.getDate() + days);
+          return date;
+        };
+        let planDataList = {
+          tasks: {
+            data: [],
+          },
+        };
+        diffString(this.minderDataList.stakehold, this.minderDataList.task)
+          .split("text")
+          .map((i, key) => {
+            if (key !== 0) {
+              i.split('"').map((y, k) => {
+                if (k === 1) {
+                  planDataList.tasks.data.push({
+                    duration: 1,
+                    end_date: new Date().addDays(1),
+                    progress: 0.1,
+                    start_date: new Date(),
+                    text: y,
+                  });
+                }
+              });
+            }
+          });
+        if (
+          this.minderDataList.plan.tasks.data.length !==
+          planDataList.tasks.data.length
+        ) {
+          let minderData = {
+            plan: planDataList,
+            minderId: this.minderDataList._id,
+          };
+          this.$store.dispatch("updateMinderChart", minderData);
+          this.$router.go(0);
+        }
+        this.$router.go(0);
+      }
     },
     preS() {
       let s = parseInt(localStorage.getItem("active"));
@@ -330,7 +373,7 @@ export default {
         this.$store.dispatch("updateMinderChart", minderData);
       }
     },
-    selectTask: function (task) {
+    selectTask: function(task) {
       this.selectedTask = task;
     },
   },
