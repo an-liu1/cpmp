@@ -48,7 +48,7 @@
         @updateData="updateTask"
         @saveData="updateTask"
         :importData="
-          !Object.keys(minderDataList.task).length === 1
+          Object.keys(minderDataList.task).length !== 1
             ? minderDataList.task
             : minderDataList.stakehold
         "
@@ -160,13 +160,60 @@ export default {
   },
   mounted() {
     this.active = parseInt(localStorage.getItem("active")) || 0;
-    this.$store.dispatch("getMinderChart", this.$route.params.id);
+    // this.$store.dispatch("getMinderChart", this.$route.params.id);
+    this.getChart();
     this.messages = this.minderDataList.plan.messages;
   },
   methods: {
+    getChart() {
+      this.$store.dispatch("getMinderChart", this.$route.params.id);
+    },
     stepClick(val) {
       localStorage.setItem("active", val);
       this.active = parseInt(localStorage.getItem("active"));
+      if (this.active === 3) {
+        Date.prototype.addDays = function(days) {
+          var date = new Date(this.valueOf());
+          date.setDate(date.getDate() + days);
+          return date;
+        };
+        let planDataList = {
+          tasks: {
+            data: [],
+          },
+        };
+        diffString(this.minderDataList.stakehold, this.minderDataList.task)
+          .split("text")
+          .map((i, key) => {
+            if (key !== 0) {
+              i.split('"').map((y, k) => {
+                if (k === 1) {
+                  planDataList.tasks.data.push({
+                    duration: 1,
+                    end_date: new Date().addDays(1),
+                    progress: 0.1,
+                    start_date: new Date(),
+                    text: y,
+                  });
+                }
+              });
+            }
+          });
+        if (
+          this.minderDataList.plan.tasks.data.length !==
+          planDataList.tasks.data.length
+        ) {
+          let minderData = {
+            plan: planDataList,
+            minderId: this.minderDataList._id,
+          };
+          this.$store.dispatch("updateMinderChart", minderData).then(() => {
+            this.getChart();
+          });
+          this.$router.go(0);
+        }
+        this.$router.go(0);
+      }
     },
     nextS() {
       let s = parseInt(localStorage.getItem("active"));
@@ -208,7 +255,9 @@ export default {
             plan: planDataList,
             minderId: this.minderDataList._id,
           };
-          this.$store.dispatch("updateMinderChart", minderData);
+          this.$store.dispatch("updateMinderChart", minderData).then(() => {
+            this.getChart();
+          });
           this.$router.go(0);
         }
         this.$router.go(0);
@@ -224,21 +273,27 @@ export default {
         goal: data.root,
         minderId: this.$route.params.id,
       };
-      this.$store.dispatch("updateMinderChart", minderData);
+      this.$store.dispatch("updateMinderChart", minderData).then(() => {
+        this.getChart();
+      });
     },
     updateStakehold(data) {
       let minderData = {
         stakehold: data.root,
         minderId: this.$route.params.id,
       };
-      this.$store.dispatch("updateMinderChart", minderData);
+      this.$store.dispatch("updateMinderChart", minderData).then(() => {
+        this.getChart();
+      });
     },
     updateTask(data) {
       let minderData = {
         task: data.root,
         minderId: this.$route.params.id,
       };
-      this.$store.dispatch("updateMinderChart", minderData);
+      this.$store.dispatch("updateMinderChart", minderData).then(() => {
+        this.getChart();
+      });
     },
     addMessage(message) {
       this.messages.unshift(message);
@@ -275,7 +330,9 @@ export default {
           },
           minderId: this.$route.params.id,
         };
-        this.$store.dispatch("updateMinderChart", minderData);
+        this.$store.dispatch("updateMinderChart", minderData).then(() => {
+          this.getChart();
+        });
       } else if (task["!nativeeditor_status"] == "updated") {
         let taskData = this.minderDataList.plan.tasks.data.map((i) => {
           if (i.id == task.id) {
@@ -294,7 +351,9 @@ export default {
           },
           minderId: this.$route.params.id,
         };
-        this.$store.dispatch("updateMinderChart", minderData);
+        this.$store.dispatch("updateMinderChart", minderData).then(() => {
+          this.getChart();
+        });
       } else if (task["!nativeeditor_status"] == "deleted") {
         let minderData = {
           plan: {
@@ -308,7 +367,9 @@ export default {
           },
           minderId: this.$route.params.id,
         };
-        this.$store.dispatch("updateMinderChart", minderData);
+        this.$store.dispatch("updateMinderChart", minderData).then(() => {
+          this.getChart();
+        });
       }
     },
     logLinkUpdate(id, mode, link) {
@@ -355,7 +416,9 @@ export default {
           },
           minderId: this.$route.params.id,
         };
-        this.$store.dispatch("updateMinderChart", minderData);
+        this.$store.dispatch("updateMinderChart", minderData).then(() => {
+          this.getChart();
+        });
       } else if (link["!nativeeditor_status"] == "deleted") {
         let linkData = this.minderDataList.plan.tasks.links.filter(
           (i) => i.id != link.id
@@ -370,7 +433,9 @@ export default {
           },
           minderId: this.$route.params.id,
         };
-        this.$store.dispatch("updateMinderChart", minderData);
+        this.$store.dispatch("updateMinderChart", minderData).then(() => {
+          this.getChart();
+        });
       }
     },
     selectTask: function(task) {
